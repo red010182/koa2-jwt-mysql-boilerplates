@@ -4,29 +4,35 @@ const path = require('path');
 
 const configFile = `${process.env.HOME || process.env.USERPROFILE}/.db_config`;
 const env = process.env.NODE_ENV;
+
+const DB_TEST = 'db_test';
+const DB_PRODUCTION = 'db';
+const DB_DEV = 'db_dev';
+
+
 let target;
 let dbName;
 
 switch (env) {
   case 'test':
     target = env;
-    dbName = 'db_test';
+    dbName = DB_TEST;
     break;
   case 'production':
     target = env;
-    dbName = 'db';
+    dbName = DB_PRODUCTION;
     break;
   default:
     target = 'dev';
-    dbName = 'db_dev';
+    dbName = DB_DEV;
     break;
 }
 console.log(env, dbName);
 const instance = JSON.parse(fs.readFileSync(configFile))[target];
 const pool = mysql.createPool({
-  host: instance.ip,
-  user: instance.name,
-  password: instance.pw,
+  host: instance.host,
+  user: instance.account,
+  password: instance.password,
   port: instance.port,
   database: dbName,
   charset: 'UTF8MB4_GENERAL_CI',
